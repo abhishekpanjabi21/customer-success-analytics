@@ -1,0 +1,30 @@
+createOrReplace
+
+	relationship rel_monthly_revenue_accounts
+		fromColumn: monthly_revenue.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_product_usage_accounts
+		fromColumn: product_usage.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_nps_responses_accounts
+		fromColumn: nps_responses.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_support_tickets_accounts
+		fromColumn: support_tickets.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_onboarding_accounts
+		crossFilteringBehavior: bothDirections
+		fromColumn: onboarding.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_account_health_accounts
+		fromColumn: account_health.account_id
+		toColumn: accounts.account_id
+
+	relationship rel_expansion_opportunities_accounts
+		fromColumn: expansion_opportunities.account_id
+		toColumn: accounts.account_id

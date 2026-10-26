@@ -1,0 +1,50 @@
+table monthly_revenue
+	lineageTag: f6105a09-731e-a5e5-3ecd-dff1743f5252
+
+	column account_id
+		dataType: string
+		lineageTag: 4ba24d37-fbaa-c72e-d47b-824761e67e0c
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column month
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: c52f0bb7-6b0c-bde6-36a1-c3e791c133e4
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = User
+
+	column seats
+		dataType: int64
+		formatString: 0
+		lineageTag: f7d97556-bde3-08eb-78e9-8d770688f1df
+		summarizeBy: none
+		sourceColumn: seats
+
+		annotation SummarizationSetBy = User
+
+	column mrr
+		dataType: int64
+		formatString: 0
+		lineageTag: 50210706-222e-5e96-c7f7-9874068b944c
+		summarizeBy: none
+		sourceColumn: mrr
+
+		annotation SummarizationSetBy = User
+
+	partition monthly_revenue = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "monthly_revenue.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"month", type date}, {"seats", Int64.Type}, {"mrr", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

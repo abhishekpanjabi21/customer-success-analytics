@@ -1,0 +1,140 @@
+table accounts
+	lineageTag: 7a90e38a-211e-ce1c-3469-28e7d1f3e968
+
+	column account_id
+		dataType: string
+		lineageTag: 64b126d5-f124-5c26-c60b-a8fd5bf527ad
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column company_name
+		dataType: string
+		lineageTag: 6206d1bf-15a1-91b2-9386-a22734ceb2cf
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = User
+
+	column industry
+		dataType: string
+		lineageTag: 400c5259-d17c-da0f-9a4b-e69e6d6cc696
+		summarizeBy: none
+		sourceColumn: industry
+
+		annotation SummarizationSetBy = User
+
+	column region
+		dataType: string
+		lineageTag: 5a2c6b45-47d1-c284-d5a0-7bd765278d29
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = User
+
+	column segment
+		dataType: string
+		lineageTag: a822235a-2d77-cc7c-1ed5-6b4de9f13214
+		summarizeBy: none
+		sourceColumn: segment
+
+		annotation SummarizationSetBy = User
+
+	column plan
+		dataType: string
+		lineageTag: 575e274a-95fd-1e53-35fd-73d81feae072
+		summarizeBy: none
+		sourceColumn: plan
+
+		annotation SummarizationSetBy = User
+
+	column csm_owner
+		dataType: string
+		lineageTag: c137bbb0-4598-a059-9e0a-b5dfd40cb1ee
+		summarizeBy: none
+		sourceColumn: csm_owner
+
+		annotation SummarizationSetBy = User
+
+	column acquisition_channel
+		dataType: string
+		lineageTag: 15188da2-cdd5-38c3-a549-f592e55ff610
+		summarizeBy: none
+		sourceColumn: acquisition_channel
+
+		annotation SummarizationSetBy = User
+
+	column signup_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: cb093359-504a-ce05-f1bf-40754d15049a
+		summarizeBy: none
+		sourceColumn: signup_date
+
+		annotation SummarizationSetBy = User
+
+	column renewal_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 3975bc3a-befe-411d-ac2a-64ce51b24874
+		summarizeBy: none
+		sourceColumn: renewal_date
+
+		annotation SummarizationSetBy = User
+
+	column status
+		dataType: string
+		lineageTag: b7ed8894-643d-0cd0-5d51-6ef691202bcc
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = User
+
+	column churn_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 9ce85f5c-0034-c2a1-e4d0-ff8a083a67dd
+		summarizeBy: none
+		sourceColumn: churn_date
+
+		annotation SummarizationSetBy = User
+
+	column churn_reason
+		dataType: string
+		lineageTag: 66e8b16a-6e12-afa2-c8ab-168083e0e8bf
+		summarizeBy: none
+		sourceColumn: churn_reason
+
+		annotation SummarizationSetBy = User
+
+	column price_per_seat
+		dataType: int64
+		formatString: 0
+		lineageTag: 45f31a4e-a925-3f8b-b26a-96027dd32d29
+		summarizeBy: none
+		sourceColumn: price_per_seat
+
+		annotation SummarizationSetBy = User
+
+	column contracted_seats_at_start
+		dataType: int64
+		formatString: 0
+		lineageTag: de9f669f-b46e-59ac-82fa-991f40a20218
+		summarizeBy: none
+		sourceColumn: contracted_seats_at_start
+
+		annotation SummarizationSetBy = User
+
+	partition accounts = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "accounts.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"company_name", type text}, {"industry", type text}, {"region", type text}, {"segment", type text}, {"plan", type text}, {"csm_owner", type text}, {"acquisition_channel", type text}, {"signup_date", type date}, {"renewal_date", type date}, {"status", type text}, {"churn_date", type date}, {"churn_reason", type text}, {"price_per_seat", Int64.Type}, {"contracted_seats_at_start", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

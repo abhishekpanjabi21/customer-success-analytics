@@ -1,0 +1,104 @@
+table expansion_opportunities
+	lineageTag: 20bb5642-6b67-ffdb-ef94-d055a6601567
+
+	column account_id
+		dataType: string
+		lineageTag: db1ed17d-6ce7-4ad0-2d73-27805f0c4fa7
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column company_name
+		dataType: string
+		lineageTag: 0205b384-3ebf-2547-db13-d8bc8fd30c02
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = User
+
+	column segment
+		dataType: string
+		lineageTag: 57456657-5d25-ef29-dfe8-c53bc969bd9c
+		summarizeBy: none
+		sourceColumn: segment
+
+		annotation SummarizationSetBy = User
+
+	column plan
+		dataType: string
+		lineageTag: cca25826-a314-e95b-4640-3ef0b37a334d
+		summarizeBy: none
+		sourceColumn: plan
+
+		annotation SummarizationSetBy = User
+
+	column csm_owner
+		dataType: string
+		lineageTag: 1965f274-cf3d-e7a4-2089-560bbd58aa41
+		summarizeBy: none
+		sourceColumn: csm_owner
+
+		annotation SummarizationSetBy = User
+
+	column health_score
+		dataType: double
+		lineageTag: 356dcb80-b666-e833-d225-66a36aba743f
+		summarizeBy: none
+		sourceColumn: health_score
+
+		annotation SummarizationSetBy = User
+
+	column utilisation
+		dataType: double
+		lineageTag: ed40ad44-5f50-505f-0ecb-265e46cd6c8d
+		summarizeBy: none
+		sourceColumn: utilisation
+
+		annotation SummarizationSetBy = User
+
+	column avg_features
+		dataType: double
+		lineageTag: 62a24354-ac8b-a51a-91d9-dbc96b85e62c
+		summarizeBy: none
+		sourceColumn: avg_features
+
+		annotation SummarizationSetBy = User
+
+	column mrr_now
+		dataType: int64
+		formatString: 0
+		lineageTag: bd120a1e-832d-1189-94dd-db46b93bffe5
+		summarizeBy: none
+		sourceColumn: mrr_now
+
+		annotation SummarizationSetBy = User
+
+	column opportunity_type
+		dataType: string
+		lineageTag: 57178bb7-6919-2b4a-4e71-3f3cb379d692
+		summarizeBy: none
+		sourceColumn: opportunity_type
+
+		annotation SummarizationSetBy = User
+
+	column potential_added_mrr
+		dataType: double
+		lineageTag: 39f90a63-91e4-eed6-f6be-11c48cc21de5
+		summarizeBy: none
+		sourceColumn: potential_added_mrr
+
+		annotation SummarizationSetBy = User
+
+	partition expansion_opportunities = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "expansion_opportunities.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"company_name", type text}, {"segment", type text}, {"plan", type text}, {"csm_owner", type text}, {"health_score", type number}, {"utilisation", type number}, {"avg_features", type number}, {"mrr_now", Int64.Type}, {"opportunity_type", type text}, {"potential_added_mrr", type number}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

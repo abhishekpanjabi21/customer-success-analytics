@@ -1,0 +1,175 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "85dfebc2e3f9afcae0f4",
+  "position": {
+    "x": 24,
+    "y": 480,
+    "z": 11000,
+    "height": 220,
+    "width": 1232,
+    "tabOrder": 11000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "company_name"
+                }
+              },
+              "queryRef": "account_health.company_name",
+              "nativeQueryRef": "company_name",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "segment"
+                }
+              },
+              "queryRef": "account_health.segment",
+              "nativeQueryRef": "segment",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "csm_owner"
+                }
+              },
+              "queryRef": "account_health.csm_owner",
+              "nativeQueryRef": "csm_owner",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "renewal_date"
+                }
+              },
+              "queryRef": "account_health.renewal_date",
+              "nativeQueryRef": "renewal_date",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "health_score"
+                }
+              },
+              "queryRef": "account_health.health_score",
+              "nativeQueryRef": "health_score",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "account_health"
+                    }
+                  },
+                  "Property": "risk_tier"
+                }
+              },
+              "queryRef": "account_health.risk_tier",
+              "nativeQueryRef": "risk_tier",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Renewals at Risk ARR"
+                }
+              },
+              "queryRef": "_Measures.Renewals at Risk ARR",
+              "nativeQueryRef": "Renewals at Risk ARR"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Renewals at Risk ARR"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Unhealthy renewals before March 2027 (largest first)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

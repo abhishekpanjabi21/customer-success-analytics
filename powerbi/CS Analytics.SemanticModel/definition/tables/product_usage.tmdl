@@ -1,0 +1,68 @@
+table product_usage
+	lineageTag: 119d8050-3a19-93e5-2a86-f6882f7f3ff7
+
+	column account_id
+		dataType: string
+		lineageTag: af1d7694-51bb-f577-bfa3-0b5f91602146
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column month
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: a7e451a7-b5a1-75d9-5ff0-1636e44b30e0
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = User
+
+	column licensed_seats
+		dataType: int64
+		formatString: 0
+		lineageTag: 3f995191-3e3b-627f-4bd2-0a0686bab640
+		summarizeBy: none
+		sourceColumn: licensed_seats
+
+		annotation SummarizationSetBy = User
+
+	column active_users
+		dataType: int64
+		formatString: 0
+		lineageTag: 21e259f8-7389-c35c-5c94-5793dcaf852d
+		summarizeBy: none
+		sourceColumn: active_users
+
+		annotation SummarizationSetBy = User
+
+	column logins
+		dataType: int64
+		formatString: 0
+		lineageTag: 2a225cc1-2c95-2d36-49a3-c184602cadab
+		summarizeBy: none
+		sourceColumn: logins
+
+		annotation SummarizationSetBy = User
+
+	column features_adopted
+		dataType: int64
+		formatString: 0
+		lineageTag: 2170cf6f-feaf-113d-1786-d20ba58a0d18
+		summarizeBy: none
+		sourceColumn: features_adopted
+
+		annotation SummarizationSetBy = User
+
+	partition product_usage = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "product_usage.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"month", type date}, {"licensed_seats", Int64.Type}, {"active_users", Int64.Type}, {"logins", Int64.Type}, {"features_adopted", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,73 @@
+table support_tickets
+	lineageTag: 830b87d9-f1ff-aa1b-76fe-8f5d830e1d9e
+
+	column ticket_id
+		dataType: string
+		lineageTag: 3db3c6c3-3d8b-975c-faf1-80a2855766d1
+		summarizeBy: none
+		sourceColumn: ticket_id
+
+		annotation SummarizationSetBy = User
+
+	column account_id
+		dataType: string
+		lineageTag: 27bd6306-a404-2fd6-f599-3ececaa55461
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column created_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 28505f24-2653-3bf2-d342-bacdb68d3cf7
+		summarizeBy: none
+		sourceColumn: created_date
+
+		annotation SummarizationSetBy = User
+
+	column category
+		dataType: string
+		lineageTag: 7c10b4ed-3f33-68bc-10db-f49ad2fa0b4d
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = User
+
+	column priority
+		dataType: string
+		lineageTag: 84172480-13e7-9de8-0510-431d37b47f61
+		summarizeBy: none
+		sourceColumn: priority
+
+		annotation SummarizationSetBy = User
+
+	column resolution_hours
+		dataType: double
+		lineageTag: a0c1aba6-a4e6-e5dc-132c-8f498811b7bb
+		summarizeBy: none
+		sourceColumn: resolution_hours
+
+		annotation SummarizationSetBy = User
+
+	column ticket_csat
+		dataType: int64
+		formatString: 0
+		lineageTag: d5c0f127-e44a-d1a0-4777-5a95d7239356
+		summarizeBy: none
+		sourceColumn: ticket_csat
+
+		annotation SummarizationSetBy = User
+
+	partition support_tickets = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "support_tickets.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"ticket_id", type text}, {"account_id", type text}, {"created_date", type date}, {"category", type text}, {"priority", type text}, {"resolution_hours", type number}, {"ticket_csat", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

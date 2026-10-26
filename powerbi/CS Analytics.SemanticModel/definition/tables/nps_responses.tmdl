@@ -1,0 +1,49 @@
+table nps_responses
+	lineageTag: 2456369c-04dc-dec3-1986-d19f724aaf55
+
+	column response_id
+		dataType: string
+		lineageTag: fc39e360-0461-de97-2952-edc73ffde6af
+		summarizeBy: none
+		sourceColumn: response_id
+
+		annotation SummarizationSetBy = User
+
+	column account_id
+		dataType: string
+		lineageTag: 8b0f9782-0fef-a119-2429-36999f538eb6
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column survey_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: e5492b07-e972-8564-8410-968c4c69bff5
+		summarizeBy: none
+		sourceColumn: survey_date
+
+		annotation SummarizationSetBy = User
+
+	column nps_score
+		dataType: int64
+		formatString: 0
+		lineageTag: 3fdce876-6ac5-b302-eea6-641b89d40980
+		summarizeBy: none
+		sourceColumn: nps_score
+
+		annotation SummarizationSetBy = User
+
+	partition nps_responses = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "nps_responses.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"response_id", type text}, {"account_id", type text}, {"survey_date", type date}, {"nps_score", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

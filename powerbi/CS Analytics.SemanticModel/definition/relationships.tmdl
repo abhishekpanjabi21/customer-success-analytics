@@ -1,0 +1,29 @@
+relationship 780ce865-49fa-b2f7-0f64-de31666ec448
+	fromColumn: monthly_revenue.account_id
+	toColumn: accounts.account_id
+
+relationship 4005bb5b-b2a6-aa96-e9c7-bea5f6739471
+	fromColumn: product_usage.account_id
+	toColumn: accounts.account_id
+
+relationship c33938e4-fcde-76c2-97bf-93532531a326
+	fromColumn: nps_responses.account_id
+	toColumn: accounts.account_id
+
+relationship d6f94fd7-10f9-65b9-1434-dff23f126168
+	fromColumn: support_tickets.account_id
+	toColumn: accounts.account_id
+
+relationship b99e0d49-2c3e-3ff7-66e7-1a240334100e
+	crossFilteringBehavior: bothDirections
+	fromColumn: onboarding.account_id
+	toColumn: accounts.account_id
+
+relationship a863d966-b167-2461-79fb-30aab5bb5b20
+	fromColumn: account_health.account_id
+	toColumn: accounts.account_id
+
+relationship 8642e513-ec3b-6745-9e1b-69fbf8ffc5a4
+	fromColumn: expansion_opportunities.account_id
+	toColumn: accounts.account_id
+

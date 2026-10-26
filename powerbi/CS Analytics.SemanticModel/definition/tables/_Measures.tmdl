@@ -1,0 +1,334 @@
+table _Measures
+	lineageTag: 66032ea1-6fbc-19b4-4351-493c4c225760
+
+	measure 'Latest Month' = CALCULATE ( MAX ( monthly_revenue[month] ), REMOVEFILTERS ( monthly_revenue ) )
+		formatString: mmm yyyy
+		displayFolder: 0 Helpers
+		lineageTag: cfbe25de-ce5b-5ba5-249a-2dd99f4318da
+
+	measure 'Total MRR' =
+			VAR m = MAX ( monthly_revenue[month] )
+			RETURN
+				CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = m )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 0d7a2af0-bf3c-16ad-cf21-fe80ff38428b
+
+	measure 'Total ARR' = [Total MRR] * 12
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: e622bf8a-a13f-f2b5-997e-ee03dcb1e329
+
+	measure 'Active Customers' =
+			VAR m = MAX ( monthly_revenue[month] )
+			RETURN
+				CALCULATE ( COUNTROWS ( monthly_revenue ), monthly_revenue[month] = m, monthly_revenue[mrr] > 0 )
+		formatString: #,0
+		displayFolder: 1 Revenue
+		lineageTag: 80787ccb-60f5-c3a8-18bb-c14b84f09df1
+
+	measure 'Avg ARR per Customer' = DIVIDE ( [Total ARR], [Active Customers] )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 5bafb78f-97ba-848a-195e-e31adc949a45
+
+	measure 'MRR 12M Ago' =
+			VAR m = MAX ( monthly_revenue[month] )
+			RETURN
+				CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = EDATE ( m, -12 ) )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 2288e91a-8374-fa06-cd91-00b74bb5b77e
+
+	measure 'MRR Growth YoY' = DIVIDE ( [Total MRR] - [MRR 12M Ago], [MRR 12M Ago] )
+		formatString: 0.0%
+		displayFolder: 1 Revenue
+		lineageTag: 8284a1de-a05d-fb8f-5ba3-89c83f0eb206
+
+	measure 'New MRR' =
+			VAR firstM = CALCULATE ( MIN ( monthly_revenue[month] ), REMOVEFILTERS ( monthly_revenue ) )
+			RETURN
+				SUMX (
+					FILTER ( monthly_revenue, monthly_revenue[month] > firstM && monthly_revenue[mrr] > 0 ),
+					VAR acc = monthly_revenue[account_id]
+					VAR m = monthly_revenue[month]
+					VAR cur = monthly_revenue[mrr]
+					VAR prev = CALCULATE ( SUM ( monthly_revenue[mrr] ), REMOVEFILTERS ( monthly_revenue ), monthly_revenue[account_id] = acc, monthly_revenue[month] = EDATE ( m, -1 ) )
+					RETURN IF ( ISBLANK ( prev ), cur )
+				)
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 375114a4-ed49-3127-d5d7-1bc0bea88214
+
+	measure 'Expansion MRR' =
+			VAR firstM = CALCULATE ( MIN ( monthly_revenue[month] ), REMOVEFILTERS ( monthly_revenue ) )
+			RETURN
+				SUMX (
+					FILTER ( monthly_revenue, monthly_revenue[month] > firstM && monthly_revenue[mrr] > 0 ),
+					VAR acc = monthly_revenue[account_id]
+					VAR m = monthly_revenue[month]
+					VAR cur = monthly_revenue[mrr]
+					VAR prev = CALCULATE ( SUM ( monthly_revenue[mrr] ), REMOVEFILTERS ( monthly_revenue ), monthly_revenue[account_id] = acc, monthly_revenue[month] = EDATE ( m, -1 ) )
+					RETURN IF ( prev > 0 && cur > prev, cur - prev )
+				)
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 12718bd1-8fc5-b040-84bb-374cced81496
+
+	measure 'Contraction MRR' =
+			VAR firstM = CALCULATE ( MIN ( monthly_revenue[month] ), REMOVEFILTERS ( monthly_revenue ) )
+			RETURN
+				SUMX (
+					FILTER ( monthly_revenue, monthly_revenue[month] > firstM && monthly_revenue[mrr] > 0 ),
+					VAR acc = monthly_revenue[account_id]
+					VAR m = monthly_revenue[month]
+					VAR cur = monthly_revenue[mrr]
+					VAR prev = CALCULATE ( SUM ( monthly_revenue[mrr] ), REMOVEFILTERS ( monthly_revenue ), monthly_revenue[account_id] = acc, monthly_revenue[month] = EDATE ( m, -1 ) )
+					RETURN IF ( prev > 0 && cur < prev, prev - cur )
+				)
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 6271d5a4-db1e-4ebd-0fa2-a2728a52ff1e
+
+	measure 'Churned MRR' =
+			VAR firstM = CALCULATE ( MIN ( monthly_revenue[month] ), REMOVEFILTERS ( monthly_revenue ) )
+			RETURN
+				SUMX (
+					FILTER ( monthly_revenue, monthly_revenue[month] > firstM && monthly_revenue[mrr] = 0 ),
+					VAR acc = monthly_revenue[account_id]
+					VAR m = monthly_revenue[month]
+					VAR cur = monthly_revenue[mrr]
+					VAR prev = CALCULATE ( SUM ( monthly_revenue[mrr] ), REMOVEFILTERS ( monthly_revenue ), monthly_revenue[account_id] = acc, monthly_revenue[month] = EDATE ( m, -1 ) )
+					RETURN prev
+				)
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: f7ac7f24-3d0a-b847-cfdd-e53d6e51f951
+
+	measure 'Net New MRR' = [New MRR] + [Expansion MRR] - [Contraction MRR] - [Churned MRR]
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 8251e8a7-ebed-7624-2ed4-c72e1e5534a7
+
+	measure 'New MRR (12M)' =
+			VAR lm = [Latest Month]
+			RETURN
+				CALCULATE ( [New MRR], monthly_revenue[month] > EDATE ( lm, -12 ), monthly_revenue[month] <= lm )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 6178ef2f-020a-5b55-443e-05de155fd37d
+
+	measure 'Expansion MRR (12M)' =
+			VAR lm = [Latest Month]
+			RETURN
+				CALCULATE ( [Expansion MRR], monthly_revenue[month] > EDATE ( lm, -12 ), monthly_revenue[month] <= lm )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: f1c24089-b4bb-b812-14d6-6a62c2cc0ee9
+
+	measure 'Churned MRR (12M)' =
+			VAR lm = [Latest Month]
+			RETURN
+				CALCULATE ( [Churned MRR], monthly_revenue[month] > EDATE ( lm, -12 ), monthly_revenue[month] <= lm )
+		formatString: \$#,0
+		displayFolder: 1 Revenue
+		lineageTag: 512c4acb-f416-5778-ce4b-71f8a8d3a37c
+
+	measure 'Churned Customers' = CALCULATE ( COUNTROWS ( monthly_revenue ), monthly_revenue[mrr] = 0 )
+		formatString: #,0
+		displayFolder: 2 Retention
+		lineageTag: 1eea7b67-5441-294e-5f69-c13a3be9d662
+
+	measure 'Churned Customers (12M)' =
+			VAR lm = [Latest Month]
+			RETURN
+				CALCULATE ( [Churned Customers], monthly_revenue[month] > EDATE ( lm, -12 ), monthly_revenue[month] <= lm )
+		formatString: #,0
+		displayFolder: 2 Retention
+		lineageTag: 91c04b94-fe83-75ab-c4bf-fbca957eccd1
+
+	measure 'Customers at Start' =
+			VAR m = MAX ( monthly_revenue[month] )
+			RETURN
+				CALCULATE ( COUNTROWS ( monthly_revenue ), monthly_revenue[month] = EDATE ( m, -1 ), monthly_revenue[mrr] > 0 )
+		formatString: #,0
+		displayFolder: 2 Retention
+		lineageTag: 8659b8f5-7e0d-9d21-9ba5-7cdeb10765a7
+
+	measure 'Logo Churn Rate' = DIVIDE ( [Churned Customers], [Customers at Start] )
+		formatString: 0.00%
+		displayFolder: 2 Retention
+		lineageTag: c3940eb2-9e12-db7a-c059-9e7731591285
+
+	measure 'Avg Monthly Logo Churn (12M)' =
+			VAR lm = [Latest Month]
+			RETURN
+				AVERAGEX ( FILTER ( VALUES ( monthly_revenue[month] ), monthly_revenue[month] > EDATE ( lm, -12 ) && monthly_revenue[month] <= lm ), [Logo Churn Rate] )
+		formatString: 0.00%
+		displayFolder: 2 Retention
+		lineageTag: 13c5be9a-ce0a-d021-561e-d6e6352c01bb
+
+	measure NRR =
+			VAR EndM = MAX ( monthly_revenue[month] )
+			VAR StartM = EDATE ( EndM, -12 )
+			VAR Cohort = CALCULATETABLE ( VALUES ( monthly_revenue[account_id] ), monthly_revenue[month] = StartM, monthly_revenue[mrr] > 0 )
+			VAR StartMRR = CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = StartM, Cohort )
+			VAR EndMRR = CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = EndM, Cohort )
+			RETURN
+				DIVIDE ( EndMRR, StartMRR )
+		formatString: 0.0%
+		displayFolder: 2 Retention
+		lineageTag: d19e8c9c-a8b7-1161-4002-349d1f2a146d
+
+	measure GRR =
+			VAR EndM = MAX ( monthly_revenue[month] )
+			VAR StartM = EDATE ( EndM, -12 )
+			VAR Cohort = CALCULATETABLE ( VALUES ( monthly_revenue[account_id] ), monthly_revenue[month] = StartM, monthly_revenue[mrr] > 0 )
+			VAR StartMRR = CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = StartM, Cohort )
+			VAR Kept =
+				SUMX (
+					Cohort,
+					VAR s = CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = StartM )
+					VAR e = COALESCE ( CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = EndM ), 0 )
+					RETURN IF ( e < s, e, s )
+				)
+			RETURN
+				DIVIDE ( Kept, StartMRR )
+		formatString: 0.0%
+		displayFolder: 2 Retention
+		lineageTag: ca5a68ec-9ae8-e81e-c8cd-a5330bc20482
+
+	measure 'Logo Retention' =
+			VAR EndM = MAX ( monthly_revenue[month] )
+			VAR StartM = EDATE ( EndM, -12 )
+			VAR Cohort = CALCULATETABLE ( VALUES ( monthly_revenue[account_id] ), monthly_revenue[month] = StartM, monthly_revenue[mrr] > 0 )
+			VAR Kept = COUNTROWS ( FILTER ( Cohort, CALCULATE ( SUM ( monthly_revenue[mrr] ), monthly_revenue[month] = EndM ) > 0 ) )
+			RETURN
+				DIVIDE ( Kept, COUNTROWS ( Cohort ) )
+		formatString: 0.0%
+		displayFolder: 2 Retention
+		lineageTag: 86116b0f-f07a-c636-d19a-0734d2d792bf
+
+	measure Customers = COUNTROWS ( accounts )
+		formatString: #,0
+		displayFolder: 2 Retention
+		lineageTag: 2151b221-c96b-6844-4ad3-be1be9b7c24b
+
+	measure 'Churn Rate' = DIVIDE ( CALCULATE ( COUNTROWS ( accounts ), accounts[status] = "Churned" ), COUNTROWS ( accounts ) )
+		formatString: 0.0%
+		displayFolder: 2 Retention
+		lineageTag: 3b4e8be7-d0eb-ef6e-b41f-050ed14368d8
+
+	measure NPS =
+			VAR lm = [Latest Month]
+			VAR r = CALCULATETABLE ( nps_responses, nps_responses[survey_date] >= EDATE ( lm, -12 ) )
+			VAR total = COUNTROWS ( r )
+			VAR promoters = COUNTROWS ( FILTER ( r, nps_responses[nps_score] >= 9 ) )
+			VAR detractors = COUNTROWS ( FILTER ( r, nps_responses[nps_score] <= 6 ) )
+			RETURN
+				ROUND ( DIVIDE ( promoters - detractors, total ) * 100, 0 )
+		formatString: 0
+		displayFolder: 3 Engagement
+		lineageTag: ae45f00b-e50b-eafc-4d17-9e5ad7e0107f
+
+	measure 'Seat Utilisation' =
+			VAR m = MAX ( product_usage[month] )
+			RETURN
+				CALCULATE ( DIVIDE ( SUM ( product_usage[active_users] ), SUM ( product_usage[licensed_seats] ) ), product_usage[month] = m )
+		formatString: 0.0%
+		displayFolder: 3 Engagement
+		lineageTag: a4f9a79e-2340-b65f-7a28-d3f114d6e72e
+
+	measure 'Avg Days to Go-Live' = AVERAGE ( onboarding[days_to_go_live] )
+		formatString: 0.0
+		displayFolder: 3 Engagement
+		lineageTag: 2655d40f-aa6b-a92c-e786-e32397e9e09b
+
+	measure 'On-time Onboarding %' =
+			DIVIDE (
+				CALCULATE ( COUNTROWS ( onboarding ), onboarding[onboarding_status] = "Completed On Time" ),
+				CALCULATE ( COUNTROWS ( onboarding ), onboarding[onboarding_status] <> "In Progress" )
+			)
+		formatString: 0.0%
+		displayFolder: 3 Engagement
+		lineageTag: 713f3b69-3f93-2abc-5c43-e4e4efccf8fc
+
+	measure Tickets = COUNTROWS ( support_tickets )
+		formatString: #,0
+		displayFolder: 3 Engagement
+		lineageTag: 16222e2b-010a-03cf-8f34-5c2ef29cc656
+
+	measure 'Avg Resolution Hours' = AVERAGE ( support_tickets[resolution_hours] )
+		formatString: 0.0
+		displayFolder: 3 Engagement
+		lineageTag: 8c938e4f-2279-2754-3024-5bd501027024
+
+	measure 'Avg Health Score' = AVERAGE ( account_health[health_score] )
+		formatString: 0.0
+		displayFolder: 4 Health
+		lineageTag: a7a5e694-1810-7619-3837-304bad954827
+
+	measure 'Health Customers' = COUNTROWS ( account_health )
+		formatString: #,0
+		displayFolder: 4 Health
+		lineageTag: e9cf09a7-fa1a-13c9-9f56-d049df2f9ad7
+
+	measure 'Health ARR' = SUM ( account_health[mrr_now] ) * 12
+		formatString: \$#,0
+		displayFolder: 4 Health
+		lineageTag: eaf040f6-6abb-e44f-c768-7fe5b6dac5f4
+
+	measure 'High Risk Customers' = CALCULATE ( COUNTROWS ( account_health ), account_health[risk_tier] = "High Risk" )
+		formatString: #,0
+		displayFolder: 4 Health
+		lineageTag: a3a852a6-7327-cbbc-d9ca-4a4c5889b461
+
+	measure 'High Risk ARR' = CALCULATE ( [Health ARR], account_health[risk_tier] = "High Risk" )
+		formatString: \$#,0
+		displayFolder: 4 Health
+		lineageTag: 49ae83c5-7a98-3fee-426f-dd345a901552
+
+	measure 'Renewals at Risk' = CALCULATE ( COUNTROWS ( account_health ), account_health[risk_tier] <> "Healthy", account_health[renewal_date] < DATE ( 2027, 3, 1 ) )
+		formatString: #,0
+		displayFolder: 4 Health
+		lineageTag: 45705f32-9bd3-47cc-9091-f94b741f0147
+
+	measure 'Renewals at Risk ARR' = CALCULATE ( [Health ARR], account_health[risk_tier] <> "Healthy", account_health[renewal_date] < DATE ( 2027, 3, 1 ) )
+		formatString: \$#,0
+		displayFolder: 4 Health
+		lineageTag: 3e22a235-669b-dc42-607f-8b61e65e22b1
+
+	measure 'Expansion Opportunities' = COUNTROWS ( expansion_opportunities )
+		formatString: #,0
+		displayFolder: 5 Growth
+		lineageTag: 9673345f-7bda-7510-99ce-c1877dbd957d
+
+	measure 'Expansion Pipeline ARR' = SUM ( expansion_opportunities[potential_added_mrr] ) * 12
+		formatString: \$#,0
+		displayFolder: 5 Growth
+		lineageTag: 6f61618c-a63d-2f3f-a8a2-91446afeb0f2
+
+	measure 'Churned Accounts' = CALCULATE ( COUNTROWS ( accounts ), accounts[status] = "Churned" )
+		formatString: #,0
+		displayFolder: 2 Retention
+		lineageTag: ab532623-417b-ea5e-157b-f1a47ff696e8
+
+	measure 'Avg Utilisation' = AVERAGE ( account_health[utilisation] )
+		formatString: 0.0%
+		displayFolder: 4 Health
+		lineageTag: 02ac5610-1990-53c7-9ad0-30283a2cf532
+
+	column Value
+		isHidden
+		formatString: 0
+		lineageTag: 4c2a464a-01bd-850a-1467-00c5563906b0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Measures = calculated
+		mode: import
+		source = {0}
+

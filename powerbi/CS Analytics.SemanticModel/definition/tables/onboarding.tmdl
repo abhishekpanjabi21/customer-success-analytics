@@ -1,0 +1,84 @@
+table onboarding
+	lineageTag: 5dac94ca-6635-7ecd-380f-91050b01449e
+
+	column account_id
+		dataType: string
+		lineageTag: 2ef8a64a-ee32-7168-f4c4-c0dc3dfcc348
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column kickoff_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 7c9c0d73-b782-c9bb-3cc1-e0fe8a9e124f
+		summarizeBy: none
+		sourceColumn: kickoff_date
+
+		annotation SummarizationSetBy = User
+
+	column go_live_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 6c4a72bd-27cc-9acb-f5c1-83502780ed19
+		summarizeBy: none
+		sourceColumn: go_live_date
+
+		annotation SummarizationSetBy = User
+
+	column days_to_go_live
+		dataType: double
+		lineageTag: feb304bb-fd4d-4ed9-f960-6cac6a3a1b20
+		summarizeBy: none
+		sourceColumn: days_to_go_live
+
+		annotation SummarizationSetBy = User
+
+	column target_days
+		dataType: int64
+		formatString: 0
+		lineageTag: a25ffc65-c727-b585-3d12-fd61d57733ee
+		summarizeBy: none
+		sourceColumn: target_days
+
+		annotation SummarizationSetBy = User
+
+	column onboarding_status
+		dataType: string
+		lineageTag: b6dec600-d843-d6c8-8973-9c67ea6237ee
+		summarizeBy: none
+		sourceColumn: onboarding_status
+
+		annotation SummarizationSetBy = User
+
+	column training_sessions
+		dataType: int64
+		formatString: 0
+		lineageTag: a9d176d9-a8bf-0a0e-46b4-ca6a0c9ae443
+		summarizeBy: none
+		sourceColumn: training_sessions
+
+		annotation SummarizationSetBy = User
+
+	column onboarding_csat
+		dataType: int64
+		formatString: 0
+		lineageTag: 076108e7-9403-6b0f-c57a-ec6c2e6adaca
+		summarizeBy: none
+		sourceColumn: onboarding_csat
+
+		annotation SummarizationSetBy = User
+
+	partition onboarding = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "onboarding.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"kickoff_date", type date}, {"go_live_date", type date}, {"days_to_go_live", type number}, {"target_days", Int64.Type}, {"onboarding_status", type text}, {"training_sessions", Int64.Type}, {"onboarding_csat", Int64.Type}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

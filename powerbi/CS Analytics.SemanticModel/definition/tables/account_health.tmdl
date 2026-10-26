@@ -1,0 +1,208 @@
+table account_health
+	lineageTag: 9adbe533-d439-be98-b42a-ed055afc7173
+
+	column account_id
+		dataType: string
+		lineageTag: 58da1e29-ce8e-5e34-416b-4b890abac25e
+		summarizeBy: none
+		sourceColumn: account_id
+
+		annotation SummarizationSetBy = User
+
+	column company_name
+		dataType: string
+		lineageTag: bbe0fe0d-fb00-09a9-e9c7-bd5c77a751b8
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = User
+
+	column segment
+		dataType: string
+		lineageTag: e398d27b-5412-9fe7-2bb0-25a3ec693471
+		summarizeBy: none
+		sourceColumn: segment
+
+		annotation SummarizationSetBy = User
+
+	column plan
+		dataType: string
+		lineageTag: dd5bc1ce-414d-b4d8-8239-11324838d2a0
+		summarizeBy: none
+		sourceColumn: plan
+
+		annotation SummarizationSetBy = User
+
+	column region
+		dataType: string
+		lineageTag: d30ab9a2-9076-898e-5a0a-c3413149d8bc
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = User
+
+	column industry
+		dataType: string
+		lineageTag: 8c274998-c022-ee22-2017-32c290669a20
+		summarizeBy: none
+		sourceColumn: industry
+
+		annotation SummarizationSetBy = User
+
+	column csm_owner
+		dataType: string
+		lineageTag: 755e22f7-3696-e0b8-4e5d-0fac8fe54346
+		summarizeBy: none
+		sourceColumn: csm_owner
+
+		annotation SummarizationSetBy = User
+
+	column renewal_date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 84c3462a-5dc9-41e7-6456-7ed44540f9f1
+		summarizeBy: none
+		sourceColumn: renewal_date
+
+		annotation SummarizationSetBy = User
+
+	column price_per_seat
+		dataType: int64
+		formatString: 0
+		lineageTag: 58166148-1924-9de0-46de-9eb64ad36d63
+		summarizeBy: none
+		sourceColumn: price_per_seat
+
+		annotation SummarizationSetBy = User
+
+	column mrr_now
+		dataType: int64
+		formatString: 0
+		lineageTag: b73cf5db-7c0a-3d31-4225-484c98fab677
+		summarizeBy: none
+		sourceColumn: mrr_now
+
+		annotation SummarizationSetBy = User
+
+	column mrr_3m_ago
+		dataType: int64
+		formatString: 0
+		lineageTag: dcf12f56-c23b-0da4-5523-e3a904af5584
+		summarizeBy: none
+		sourceColumn: mrr_3m_ago
+
+		annotation SummarizationSetBy = User
+
+	column utilisation
+		dataType: double
+		lineageTag: 53ac552e-e90b-74b4-791c-5fcaf2857fcd
+		summarizeBy: none
+		sourceColumn: utilisation
+
+		annotation SummarizationSetBy = User
+
+	column avg_features
+		dataType: double
+		lineageTag: f954acbc-4a89-e23d-b8ab-4be8778aa885
+		summarizeBy: none
+		sourceColumn: avg_features
+
+		annotation SummarizationSetBy = User
+
+	column latest_nps
+		dataType: double
+		lineageTag: ff698f9f-5e86-de46-cfb6-a7fb3ddb68ae
+		summarizeBy: none
+		sourceColumn: latest_nps
+
+		annotation SummarizationSetBy = User
+
+	column tickets_90d
+		dataType: int64
+		formatString: 0
+		lineageTag: 3c57b175-9889-e37b-c5ea-ae3dd2dee898
+		summarizeBy: none
+		sourceColumn: tickets_90d
+
+		annotation SummarizationSetBy = User
+
+	column onboarding_status
+		dataType: string
+		lineageTag: 7e19e2e1-37df-edf6-5513-053f2a4f15b7
+		summarizeBy: none
+		sourceColumn: onboarding_status
+
+		annotation SummarizationSetBy = User
+
+	column usage_score
+		dataType: double
+		lineageTag: 99231b20-b1c5-7bf4-a81e-bca0c3cd46c1
+		summarizeBy: none
+		sourceColumn: usage_score
+
+		annotation SummarizationSetBy = User
+
+	column nps_component
+		dataType: int64
+		formatString: 0
+		lineageTag: 23650601-d1e9-c904-613e-fd1123b2deec
+		summarizeBy: none
+		sourceColumn: nps_component
+
+		annotation SummarizationSetBy = User
+
+	column support_score
+		dataType: int64
+		formatString: 0
+		lineageTag: cd4ff166-0b0d-0b3a-a70f-7d31677846f9
+		summarizeBy: none
+		sourceColumn: support_score
+
+		annotation SummarizationSetBy = User
+
+	column onboarding_score
+		dataType: int64
+		formatString: 0
+		lineageTag: e186ab0e-e221-a3de-e033-5cb34ffdceb0
+		summarizeBy: none
+		sourceColumn: onboarding_score
+
+		annotation SummarizationSetBy = User
+
+	column growth_score
+		dataType: int64
+		formatString: 0
+		lineageTag: aff598fc-4625-b0b6-8ead-ecb80c503648
+		summarizeBy: none
+		sourceColumn: growth_score
+
+		annotation SummarizationSetBy = User
+
+	column health_score
+		dataType: double
+		lineageTag: 53560cd6-de7e-5d46-ae06-c20260a6ee10
+		summarizeBy: none
+		sourceColumn: health_score
+
+		annotation SummarizationSetBy = User
+
+	column risk_tier
+		dataType: string
+		lineageTag: ccf14f5b-97a7-1fbe-b767-f94ff9871db9
+		summarizeBy: none
+		sourceColumn: risk_tier
+
+		annotation SummarizationSetBy = User
+
+	partition account_health = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents(DataFolder & "account_health.csv"), [Delimiter=",", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    Typed = Table.TransformColumnTypes(Promoted, {{"account_id", type text}, {"company_name", type text}, {"segment", type text}, {"plan", type text}, {"region", type text}, {"industry", type text}, {"csm_owner", type text}, {"renewal_date", type date}, {"price_per_seat", Int64.Type}, {"mrr_now", Int64.Type}, {"mrr_3m_ago", Int64.Type}, {"utilisation", type number}, {"avg_features", type number}, {"latest_nps", type number}, {"tickets_90d", Int64.Type}, {"onboarding_status", type text}, {"usage_score", type number}, {"nps_component", Int64.Type}, {"support_score", Int64.Type}, {"onboarding_score", Int64.Type}, {"growth_score", Int64.Type}, {"health_score", type number}, {"risk_tier", type text}}, "en-US")
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table
+

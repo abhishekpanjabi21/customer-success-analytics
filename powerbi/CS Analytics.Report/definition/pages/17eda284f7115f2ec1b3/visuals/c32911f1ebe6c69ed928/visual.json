@@ -1,0 +1,160 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.5.0/schema.json",
+  "name": "c32911f1ebe6c69ed928",
+  "position": {
+    "x": 24,
+    "y": 460,
+    "z": 11000,
+    "height": 240,
+    "width": 1232,
+    "tabOrder": 11000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expansion_opportunities"
+                    }
+                  },
+                  "Property": "company_name"
+                }
+              },
+              "queryRef": "expansion_opportunities.company_name",
+              "nativeQueryRef": "company_name",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expansion_opportunities"
+                    }
+                  },
+                  "Property": "segment"
+                }
+              },
+              "queryRef": "expansion_opportunities.segment",
+              "nativeQueryRef": "segment",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expansion_opportunities"
+                    }
+                  },
+                  "Property": "plan"
+                }
+              },
+              "queryRef": "expansion_opportunities.plan",
+              "nativeQueryRef": "plan",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expansion_opportunities"
+                    }
+                  },
+                  "Property": "opportunity_type"
+                }
+              },
+              "queryRef": "expansion_opportunities.opportunity_type",
+              "nativeQueryRef": "opportunity_type",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "expansion_opportunities"
+                    }
+                  },
+                  "Property": "health_score"
+                }
+              },
+              "queryRef": "expansion_opportunities.health_score",
+              "nativeQueryRef": "health_score",
+              "active": true
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Measures"
+                    }
+                  },
+                  "Property": "Expansion Pipeline ARR"
+                }
+              },
+              "queryRef": "_Measures.Expansion Pipeline ARR",
+              "nativeQueryRef": "Expansion Pipeline ARR"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Measures"
+                  }
+                },
+                "Property": "Expansion Pipeline ARR"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Expansion accounts (largest first)'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}
